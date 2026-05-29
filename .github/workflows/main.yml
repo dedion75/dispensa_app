@@ -3,19 +3,25 @@ on: [push, workflow_dispatch]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
       - name: Build APK with Buildozer
-        uses: ArtemGovorov/buildozer-action@v1
+        uses: actions4kivy/buildozer-action@v1
         id: buildozer
         with:
-          command: buildozer -v android debug
-          buildozer_version: master
+          workdir: .
+          buildozer_version: stable
 
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: package
+          name: Dispensa-APK
           path: ${{ steps.buildozer.outputs.filename }}
